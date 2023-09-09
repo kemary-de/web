@@ -6,14 +6,12 @@ declare module '@vue/runtime-core' {
     $keycloak: Keycloak;
   }
 }
-
+const keycloak = new Keycloak({
+  url: 'https://auth.kemary.de',
+  realm: 'kemary',
+  clientId: 'web-app',
+});
 export default boot(({ app }) => {
-  const keycloak = new Keycloak({
-    url: 'https://auth.kemary.de',
-    realm: 'kemary',
-    clientId: 'web-app',
-  });
-
   keycloak
     .init({ onLoad: 'check-sso', checkLoginIframe: false, enableLogging: true })
     .then(() => {
@@ -32,4 +30,4 @@ export default boot(({ app }) => {
     });
 });
 
-export { Keycloak };
+export { keycloak };
