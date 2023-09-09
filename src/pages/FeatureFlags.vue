@@ -154,6 +154,9 @@ export default defineComponent({
     const isDeleteFeatureFlagOpen = ref(false);
 
     onMounted(() => {
+      if (!keycloak.authenticated) {
+        window.location.href = '/';
+      }
       keycloak.onReady = () => {
         getAllFeatureFlags();
       };

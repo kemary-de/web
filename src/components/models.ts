@@ -19,3 +19,12 @@ export type FeatureFlag = {
   updatedAt: Date;
   updatedBy: string;
 };
+
+export type Token = {
+  id: number;
+  token: string;
+  user: string;
+  createdAt: Date;
+  valid: boolean;
+  validUntil: Date;
+};
