@@ -70,7 +70,7 @@ const linksList = [
     title: 'Tokens',
     caption: 'manage tokens, you need them to use feature flags',
     icon: 'vpn_key',
-    link: '/tokens',
+    link: '/token',
   },
 ];
 

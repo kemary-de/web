@@ -1,5 +1,8 @@
 <template>
   <q-page style="padding-top: 3rem">
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn fab icon="add" color="primary" @click="createNew()" />
+    </q-page-sticky>
     <div class="ff-table">
       <div class="name">Name</div>
       <div class="status">Status</div>
@@ -43,7 +46,7 @@
     >
       <q-card v-if="selectedFeatureFlag">
         <q-card-section>
-          <div class="text">
+          <div class="text" v-if="!isCreatingNew">
             <b>{{ selectedFeatureFlag.name }}</b> is
             {{ selectedFeatureFlag.enabled ? 'enabled' : 'disabled' }}
           </div>
@@ -77,10 +80,7 @@
                   v-model="selectedFeatureFlag.type"
                   outlined
                   dense
-                  :options="[
-                    { label: 'Boolean', value: 'boolean' },
-                    { label: 'MULTI', value: 'MULTI' },
-                  ]"
+                  :options="['BOOLEAN', 'MULTI']"
                 ></q-select>
               </td>
               <td>
@@ -152,11 +152,9 @@ export default defineComponent({
     const isEditFeatureFlag = ref(false);
     const selectedFeatureFlag: Ref<FeatureFlag | null> = ref(null);
     const isDeleteFeatureFlagOpen = ref(false);
+    const isCreatingNew = ref(false);
 
     onMounted(() => {
-      if (!keycloak.authenticated) {
-        window.location.href = '/';
-      }
       keycloak.onReady = () => {
         getAllFeatureFlags();
       };
@@ -179,25 +177,38 @@ export default defineComponent({
       isEditFeatureFlag,
       isDeleteFeatureFlagOpen,
       selectedFeatureFlag,
+      isCreatingNew,
       editFeatureFlag(featureFlag: FeatureFlag) {
         isEditFeatureFlag.value = !isEditFeatureFlag.value;
         selectedFeatureFlag.value = featureFlag;
       },
       saveFeatureFlag(featureFlag: FeatureFlag) {
-        selectedFeatureFlag.value = null;
-        isEditFeatureFlag.value = false;
-        console.log(featureFlag.type);
-        api
-          .put('/feature-flag/' + featureFlag.name, featureFlag, {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + keycloak.token?.toString(),
-            },
-          })
-          .then((response) => {
-            console.log(response);
-            getAllFeatureFlags();
-          });
+        if (isCreatingNew.value) {
+          featureFlag.createdAt = new Date();
+          api
+            .post('/feature-flag', selectedFeatureFlag.value, {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + keycloak.token?.toString(),
+              },
+            })
+            .then(() => {
+              getAllFeatureFlags();
+            });
+        } else {
+          selectedFeatureFlag.value = null;
+          isEditFeatureFlag.value = false;
+          api
+            .put('/feature-flag/' + featureFlag.name, featureFlag.value, {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + keycloak.token?.toString(),
+              },
+            })
+            .then(() => {
+              getAllFeatureFlags();
+            });
+        }
       },
       changeFeatureFlagStatus(featureFlag: FeatureFlag) {
         featureFlag.enabled = !featureFlag.enabled;
@@ -209,7 +220,6 @@ export default defineComponent({
             },
           })
           .then((response) => {
-            console.log(response);
             getAllFeatureFlags();
           });
       },
@@ -225,6 +235,19 @@ export default defineComponent({
             selectedFeatureFlag.value = null;
             getAllFeatureFlags();
           });
+      },
+      createNew() {
+        isCreatingNew.value = true;
+        isEditFeatureFlag.value = !isEditFeatureFlag.value;
+        selectedFeatureFlag.value = {
+          name: '',
+          enabled: false,
+          type: 'BOOLEAN',
+          content: '',
+          value: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
       },
     };
   },

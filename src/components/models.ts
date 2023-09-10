@@ -22,6 +22,7 @@ export type FeatureFlag = {
 
 export type Token = {
   id: number;
+  name: string;
   token: string;
   user: string;
   createdAt: Date;
