@@ -1,4 +1,5 @@
 import { boot } from 'quasar/wrappers';
+
 import Keycloak from 'keycloak-js';
 
 declare module '@vue/runtime-core' {
@@ -29,5 +30,4 @@ export default boot(({ app }) => {
       console.error(console.error(error));
     });
 });
-
 export { keycloak };

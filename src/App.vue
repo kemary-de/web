@@ -1,5 +1,11 @@
 <template>
-  <router-view />
+  <router-view v-if="renderComponent" />
+  <div
+    v-else
+    class="fullscreen text-white text-center q-pa-md flex flex-center"
+  >
+    <q-spinner-gears size="100px" color="primary" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -8,14 +14,15 @@ import { keycloak } from 'src/boot/keycloak';
 
 export default defineComponent({
   name: 'App',
-  async mounted() {
-    if (this.$keycloak && this.$keycloak.authenticated) {
-      this.$api.defaults.headers.common.Authorization = `Bearer ${this.$keycloak.token?.toString()}`;
-    }
+  data() {
+    return {
+      renderComponent: true,
+    };
   },
-  setup() {
-    keycloak.onReady = () => {
-      return {};
+  mounted() {
+    this.renderComponent = false;
+    keycloak.onReady = async () => {
+      this.renderComponent = true;
     };
   },
 });

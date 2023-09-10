@@ -1,49 +1,29 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page class="col items-center justify-evenly text-center">
+    <h1 class="text-h1">Welcome to Kemary</h1>
+    <strong class="text-h3">What is Kemary?</strong>
+    <p class="text-h5">
+      Kemary is a feature flag management tool that allows you to manage your
+      feature flags in a centralized way.
+    </p>
+    <q-btn
+      class="text-h5"
+      color="primary"
+      label="Get Started"
+      unelevated
+      @click="$router.push('/register')"
+    />
   </q-page>
 </template>
 
 <script lang="ts">
-import { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'IndexPage',
-  components: { ExampleComponent },
+  components: {},
   setup() {
-    const todos = ref<Todo[]>([
-      {
-        id: 1,
-        content: 'ct1',
-      },
-      {
-        id: 2,
-        content: 'ct2',
-      },
-      {
-        id: 3,
-        content: 'ct3',
-      },
-      {
-        id: 4,
-        content: 'ct4',
-      },
-      {
-        id: 5,
-        content: 'ct5',
-      },
-    ]);
-    const meta = ref<Meta>({
-      totalCount: 1200,
-    });
-    return { todos, meta };
+    return {};
   },
 });
 </script>

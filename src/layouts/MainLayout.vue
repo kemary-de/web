@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> Kemary </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -32,6 +32,20 @@
             <q-item-label caption>Login into your account</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item
+          clickable
+          href="/register"
+          v-if="$keycloak && $keycloak.authenticated === false"
+        >
+          <q-item-section avatar>
+            <q-icon name="person_add" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Register</q-item-label>
+            <q-item-label caption>Create your account</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item clickable @click="$keycloak.logout()" v-else>
           <q-item-section avatar>
             <q-icon name="logout" />
@@ -41,11 +55,13 @@
             <q-item-label>Logout</q-item-label>
           </q-item-section>
         </q-item>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <div v-if="$keycloak && $keycloak.authenticated">
+          <EssentialLink
+            v-for="link in essentialLinks"
+            :key="link.title"
+            v-bind="link"
+          />
+        </div>
       </q-list>
     </q-drawer>
 
