@@ -34,7 +34,7 @@
         </q-item>
         <q-item
           clickable
-          href="/register"
+          @click="$keycloak.register()"
           v-if="$keycloak && $keycloak.authenticated === false"
         >
           <q-item-section avatar>

@@ -11,7 +11,7 @@
       color="primary"
       label="Get Started"
       unelevated
-      @click="$router.push('/register')"
+      @click="$keycloak.register()"
     />
   </q-page>
 </template>
