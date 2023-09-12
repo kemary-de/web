@@ -138,7 +138,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted } from 'vue';
+import { defineComponent, ref, Ref, onMounted, getCurrentInstance } from 'vue';
 import { api } from 'src/boot/axios';
 import { keycloak } from 'src/boot/keycloak';
 import FeatureFlagElement from 'components/FeatureFlagElement.vue';
@@ -153,6 +153,7 @@ export default defineComponent({
     const selectedFeatureFlag: Ref<FeatureFlag | null> = ref(null);
     const isDeleteFeatureFlagOpen = ref(false);
     const isCreatingNew = ref(false);
+    const instance = getCurrentInstance();
 
     onMounted(() => {
       getAllFeatureFlags();
@@ -170,6 +171,11 @@ export default defineComponent({
         })
         .then((response) => {
           featureFlags.value = response.data;
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            instance?.proxy?.$router.push('/');
+          }
         });
     }
 

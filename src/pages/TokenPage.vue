@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted } from 'vue';
+import { defineComponent, ref, Ref, onMounted, getCurrentInstance } from 'vue';
 import { api } from 'src/boot/axios';
 import { keycloak } from 'src/boot/keycloak';
 import { Token } from 'src/components/models';
@@ -98,6 +98,7 @@ export default defineComponent({
     const selectedToken: Ref<Token | null> = ref(null);
     const isCreateNew = ref(false);
     const isShowCreated = ref(false);
+    const instance = getCurrentInstance();
     onMounted(() => {
       getAllTokens();
     });
@@ -111,6 +112,11 @@ export default defineComponent({
         })
         .then((response) => {
           tokens.value = response.data;
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            instance?.proxy?.$router.push('/');
+          }
         });
     }
 
