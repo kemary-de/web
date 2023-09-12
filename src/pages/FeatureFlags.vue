@@ -155,6 +155,7 @@ export default defineComponent({
     const isCreatingNew = ref(false);
 
     onMounted(() => {
+      getAllFeatureFlags();
       keycloak.onReady = () => {
         getAllFeatureFlags();
       };

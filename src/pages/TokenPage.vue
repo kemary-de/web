@@ -99,9 +99,7 @@ export default defineComponent({
     const isCreateNew = ref(false);
     const isShowCreated = ref(false);
     onMounted(() => {
-      keycloak.onReady = () => {
-        getAllTokens();
-      };
+      getAllTokens();
     });
     function getAllTokens() {
       api
